@@ -20,7 +20,7 @@ router.post('/',async (req,res) => {
             return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
         }
         
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = user && await bcrypt.compare(password, user.password);
 
         if(!isMatch){
             return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] })
@@ -28,7 +28,8 @@ router.post('/',async (req,res) => {
 
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                userId
             }            
         }
 
@@ -41,7 +42,7 @@ router.post('/',async (req,res) => {
               res.json({ token });
             }
         );
-
+        res.status(200).json({ user })
     } catch(err){
         console.log(err.message);
         res.status(500).send( `Server error ${err.message}` )

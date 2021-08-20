@@ -14,7 +14,8 @@ connectDB();
 app.use('/api/register', require('./routes/api/register'));
 app.use('/api/auth/cars-available', require('./routes/api/carsAvailable'));
 app.use('/api/auth/book', require('./routes/api/book'));
-app.use('api/auth/past-bookings', require('./routes/api/pastBookings'));
+app.use('/api/auth/past-bookings', require('./routes/api/pastBookings'));
+app.use('/api/auth', require('./routes/api/auth'));
 
 app.get('/',(req,res) => {
     try{

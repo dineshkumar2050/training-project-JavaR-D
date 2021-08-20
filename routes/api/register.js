@@ -10,13 +10,18 @@ const User = require('../../models/User');
 router.post('/', async (req,res) => {
     try{
         const { name, userId, password, contact, address, isAdmin } = req.body;
-        let userExists = User.findOne({ userId }) || User.findOne({ isAdmin: true });
+        
+        let userExists = await User.findOne({ userId });
+
         if(userExists) {
-            return res.status(400).json({ allUsers: User.find(),body: req.body,error: 'User already exist,please register with another user id' })
-        } else if(!Object.values(req.body).find(value => !value)){
+            return res.status(200).send(`User with id ${userExists.userId} already exits, please login`);
+        } 
+
+        if(Object.values(req.body).some(value => value === '')){
             return res.status(400).json({ error: 'Please fill all the fields to continue' })
         }
-        const newUser =  new User({
+
+        const newUser = await new User({
             name,
             userId,
             password,
@@ -33,16 +38,19 @@ router.post('/', async (req,res) => {
 
         const payload = {
             user: {
-                id: newUser.id
+                id: newUser.id,
+                userId: newUser.userId
             }
         };
+        // await jwt.sign(payload, secretKey,{ expires: '5 days' }, (err, token) => {
+        //     if(err) throw err;
+        //     // res.json({ token })
+        //     console.log('token',token)
+        // })
 
-        jwt.sign(payload, secretKey,{ expires: '5 days' }, (err, token) => {
-            if(err) throw err;
-            res.json({ token })
-        })
+        const token = await jwt.sign(payload, secretKey,{ expiresIn: '5 days' });
 
-        res.status(200).json({ data: user })
+        res.status(200).json({ data: { ...newUser._doc,token } })
     } catch(err){
         res.status(500).send(`Server Error -> ${err.message}`)
     }

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
-        required: true
+        default: false
     },
     isBlocked: {
         type: Boolean,
