@@ -7,6 +7,10 @@ export const login = (email, password) => async dispatch => {
 
         const res = await api.post('/auth', body);
 
+        if(res && res.data && res.data.data && res.data.data.token){
+            setAuthToken(res.data.data.token);
+        }
+
         dispatch({
             type: LOGIN,
             payload: res.data
@@ -22,4 +26,16 @@ export const login = (email, password) => async dispatch => {
 
 }
 
-export const logout = () => ({ type: LOGOUT });
+export const logout = () => dispatch => {
+    try{
+        setAuthToken('');
+        dispatch({ 
+            type: LOGOUT 
+        })
+    } catch(err){
+        dispatch({
+            type: LOGIN,
+            err
+        });
+    }
+}

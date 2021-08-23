@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     },
     isBlocked: {
         type: Boolean,
-        required: false
+        default: false
     },
     name: {
         type: String,

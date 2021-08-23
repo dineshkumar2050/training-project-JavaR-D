@@ -9,7 +9,7 @@ const User = require('../../models/User');
 
 router.post('/', async (req,res) => {
     try{
-        const { name, userId, password, contact, address, isAdmin } = req.body;
+        const { name, userId, password, contact, address } = req.body;
         
         let userExists = await User.findOne({ userId });
 
@@ -27,7 +27,6 @@ router.post('/', async (req,res) => {
             password,
             contact,
             address,
-            isAdmin
         })
 
         const salt = await bcrypt.genSalt(10);
